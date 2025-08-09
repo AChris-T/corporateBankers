@@ -69,11 +69,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
     const code = generateCode();
     setGeneratedCode(code);
 
-    const endpoint =
-      import.meta.env.MODE === 'development'
-        ? '/api/register'
-        : import.meta.env?.VITE_REGISTRATION_ENDPOINT ||
-          'https://script.google.com/macros/s/AKfycbzl11Z1PxufX0B2t4O9XrX9W3N4mWJOUuAejivJ-E67WL276q6wKuYJ1wFbUIBHIFGgDw/exec';
+    const endpoint = '/api/register';
 
     try {
       setIsLoading(true);
