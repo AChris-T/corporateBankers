@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import heroVideo from '../assets/herovideo.mp4';
+import flier from '../assets/flier.jpeg';
 
 export default function Anniversary() {
   const containerVariants = {
@@ -11,9 +12,9 @@ export default function Anniversary() {
       scale: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut"
-      }
-    }
+        ease: 'easeOut',
+      },
+    },
   };
 
   const videoVariants = {
@@ -24,21 +25,22 @@ export default function Anniversary() {
       transition: {
         duration: 0.6,
         delay: 0.3,
-        ease: "easeOut"
-      }
-    }
+        ease: 'easeOut',
+      },
+    },
   };
 
   return (
-    <motion.div 
-      className="md:px-40 mt-32 mx-2 py-3"
+    <motion.div
+      className="lg:px-40 mt-32 mx-2 py-3"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <div className="aniv relative rounded-xl h-[400px] flex justify-between items-center">
-        <motion.div 
-          className="h-[90px] absolute -top-8 ml-2  w-[200px] shadow-md"
+      <div className="h-[500px]  justify-center flex ">
+        <img src={flier} alt="" className="object-cover relative" />
+        <motion.div
+          className="h-[90px] absolute -ml-52 -mt-6  w-[200px] shadow-md"
           variants={videoVariants}
         >
           <video

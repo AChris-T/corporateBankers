@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const RegistrationModal = ({ isOpen, onClose }) => {
@@ -7,6 +7,30 @@ const RegistrationModal = ({ isOpen, onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [name, setName] = useState('');
+  const [fullNameError, setFullnameError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const firstFieldRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && firstFieldRef.current) {
+      firstFieldRef.current.focus();
+    }
+  }, [isOpen]);
 
   const generateCode = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -22,23 +46,75 @@ const RegistrationModal = ({ isOpen, onClose }) => {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email) {
+    if (!name.trim()) {
+      setFullnameError('Please enter your full name');
+      return;
+    }
+    if (!email.trim()) {
       setEmailError('Please enter your email address');
       return;
     }
-
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       return;
     }
 
     setEmailError('');
+    setFullnameError('');
+    setServerError('');
+
     const code = generateCode();
     setGeneratedCode(code);
-    setIsSubmitted(true);
+
+    const endpoint =
+      import.meta.env.MODE === 'development'
+        ? '/api/register'
+        : import.meta.env?.VITE_REGISTRATION_ENDPOINT ||
+          'https://script.google.com/macros/s/AKfycbzl11Z1PxufX0B2t4O9XrX9W3N4mWJOUuAejivJ-E67WL276q6wKuYJ1wFbUIBHIFGgDw/exec';
+
+    try {
+      setIsLoading(true);
+
+      console.log('Registration endpoint:', endpoint);
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          timeline: code,
+        }),
+      });
+
+      let result = {};
+      try {
+        result = await response.json();
+      } catch (_) {
+        // non-JSON response
+      }
+
+      if (
+        response.ok &&
+        (result.success === undefined || result.success === true)
+      ) {
+        setIsSubmitted(true);
+      } else {
+        const message =
+          result.message || 'Registration failed. Please try again.';
+        setServerError(message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setServerError(
+        'Network error. Please check your connection and try again.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleClose = () => {
@@ -46,6 +122,10 @@ const RegistrationModal = ({ isOpen, onClose }) => {
     setIsSubmitted(false);
     setGeneratedCode('');
     setEmailError('');
+    setName('');
+    setFullnameError('');
+    setServerError('');
+    setIsLoading(false);
     onClose();
   };
 
@@ -96,6 +176,10 @@ const RegistrationModal = ({ isOpen, onClose }) => {
           onClick={handleClose}
         >
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
             className="bg-white/95 backdrop-blur-md rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl border border-white/20"
             variants={modalVariants}
             initial="hidden"
@@ -110,15 +194,63 @@ const RegistrationModal = ({ isOpen, onClose }) => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <h2 className="text-2xl md:text-3xl font-bold text-[#0b2241] mb-2 text-center">
+                  <h2
+                    id="modal-title"
+                    className="text-2xl md:text-3xl font-bold text-[#0b2241] mb-2 text-center"
+                  >
                     Register for Event
                   </h2>
-                  <p className="text-gray-600 text-center mb-6">
+                  <p
+                    id="modal-description"
+                    className="text-gray-600 text-center mb-6"
+                  >
                     Enter your email to receive your unique registration code
                   </p>
                 </motion.div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                  >
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Full Name
+                    </label>
+                    <input
+                      ref={firstFieldRef}
+                      type="text"
+                      id="name"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (fullNameError) setFullnameError('');
+                      }}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0b2241] transition-colors ${
+                        fullNameError ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      placeholder="Enter your full name"
+                      autoComplete="name"
+                      aria-invalid={Boolean(fullNameError)}
+                      aria-describedby={
+                        fullNameError ? 'name-error' : undefined
+                      }
+                      disabled={isLoading}
+                    />
+                    {fullNameError && (
+                      <motion.p
+                        id="name-error"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-red-500 text-sm mt-1"
+                      >
+                        {fullNameError}
+                      </motion.p>
+                    )}
+                  </motion.div>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -142,9 +274,14 @@ const RegistrationModal = ({ isOpen, onClose }) => {
                         emailError ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Enter your email address"
+                      autoComplete="email"
+                      aria-invalid={Boolean(emailError)}
+                      aria-describedby={emailError ? 'email-error' : undefined}
+                      disabled={isLoading}
                     />
                     {emailError && (
                       <motion.p
+                        id="email-error"
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="text-red-500 text-sm mt-1"
@@ -153,7 +290,15 @@ const RegistrationModal = ({ isOpen, onClose }) => {
                       </motion.p>
                     )}
                   </motion.div>
-
+                  {serverError && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-600 text-sm"
+                    >
+                      {serverError}
+                    </motion.p>
+                  )}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -171,11 +316,16 @@ const RegistrationModal = ({ isOpen, onClose }) => {
                     </motion.button>
                     <motion.button
                       type="submit"
-                      className="flex-1 px-4 py-3 bg-[#0b2241] text-white rounded-lg font-medium hover:bg-[#1f252c] transition-colors"
+                      disabled={isLoading}
+                      className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors text-white ${
+                        isLoading
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : 'bg-[#0b2241] hover:bg-[#1f252c]'
+                      }`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      Register
+                      {isLoading ? 'Registering…' : 'Register'}
                     </motion.button>
                   </motion.div>
                 </form>
@@ -236,9 +386,26 @@ const RegistrationModal = ({ isOpen, onClose }) => {
                   <p className="text-sm text-gray-300 mb-2">
                     Your Registration Code:
                   </p>
-                  <p className="text-2xl font-bold tracking-wider">
-                    {generatedCode}
-                  </p>
+                  <div className="flex items-center justify-center gap-3">
+                    <p className="text-2xl font-bold tracking-wider select-all">
+                      {generatedCode}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(generatedCode);
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 1500);
+                        } catch (_) {
+                          // ignore
+                        }
+                      }}
+                      className="px-3 py-1 text-xs bg-white/20 hover:bg-white/30 rounded"
+                    >
+                      {copied ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
                 </motion.div>
 
                 <motion.p

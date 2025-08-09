@@ -18,14 +18,16 @@
   font-weight: 700;
 }
 .aniv {
-  background-image: url('./assets/hero-background.jpg');
-  background-size: cover;
-  object-position: center;
+  background-image: url('./assets/flier.jpeg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 300px;
 }
 
 /* Custom animations */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -34,7 +36,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

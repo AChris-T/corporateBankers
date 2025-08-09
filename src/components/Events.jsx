@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CalenderIcon, Location, TagIcon, TimeIcon } from '../assets/icons';
@@ -9,9 +10,9 @@ export default function Events() {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.1
-      }
-    }
+        delayChildren: 0.1,
+      },
+    },
   };
 
   const titleVariants = {
@@ -19,8 +20,8 @@ export default function Events() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
+      transition: { duration: 0.6, ease: 'easeOut' },
+    },
   };
 
   const cardVariants = {
@@ -29,31 +30,31 @@ export default function Events() {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.6, ease: 'easeOut' },
     },
     hover: {
       scale: 1.02,
       y: -5,
-      transition: { duration: 0.3, ease: "easeOut" }
-    }
+      transition: { duration: 0.3, ease: 'easeOut' },
+    },
   };
 
   const iconVariants = {
     hover: {
       rotate: 360,
       scale: 1.1,
-      transition: { duration: 0.5 }
-    }
+      transition: { duration: 0.5 },
+    },
   };
 
   return (
-    <motion.div 
-      className="md:px-40 px-3 mt-22 py-3 flex justify-center gap-4 items-center flex-col"
+    <motion.div
+      className="lg:px-40 px-3 mt-22 py-3 flex justify-center gap-4 items-center flex-col"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.h3 
+      <motion.h3
         className="text-3xl font-bold font-inter text-[#0b2241]"
         variants={titleVariants}
       >
@@ -61,7 +62,7 @@ export default function Events() {
       </motion.h3>
       <div className="flex flex-col w-full gap-3">
         <div className="w-full flex flex-col gap-3">
-          <motion.div 
+          <motion.div
             className="bg-[#0b2241] w-full rounded-2xl flex flex-col gap-5 justify-between p-6 cursor-pointer"
             variants={cardVariants}
             whileHover="hover"
@@ -69,10 +70,7 @@ export default function Events() {
           >
             <div className="gap-3 flex flex-col md:flex-row justify-between md:items-center">
               <div className="flex -ml-2 items-center gap-3">
-                <motion.div
-                  variants={iconVariants}
-                  whileHover="hover"
-                >
+                <motion.div variants={iconVariants} whileHover="hover">
                   <CalenderIcon
                     width={30}
                     height={30}
@@ -84,10 +82,7 @@ export default function Events() {
                 </h3>
               </div>
               <div className="text-white md:text-gray-400 -ml-2 gap-2 flex items-center">
-                <motion.div
-                  variants={iconVariants}
-                  whileHover="hover"
-                >
+                <motion.div variants={iconVariants} whileHover="hover">
                   <TimeIcon width={25} height={25} className="flex-shrink-0" />
                 </motion.div>
                 <h3 className="text-lg font-inter font-medium">02:00 PM</h3>
@@ -95,7 +90,7 @@ export default function Events() {
             </div>
 
             <div className="flex -ml-2 gap-2 items-start md:items-center">
-              <motion.div 
+              <motion.div
                 className="flex-shrink-0"
                 variants={iconVariants}
                 whileHover="hover"
@@ -105,13 +100,13 @@ export default function Events() {
               <span className="text-white uppercase font-semibold text-sm md:text-base font-inter">
                 Flash Back Friday: NOSTALGIC CB{' '}
                 <span className="text-gray-300 uppercase font-semibold text-sm">
-                  Meeting,Scchool Tour,Games & TGIF ViBEs
+                  Meeting,School Tour,Games & TGIF ViBEs
                 </span>
               </span>
             </div>
 
             <div className="flex items-start md:items-center gap-2 -ml-2">
-              <motion.div 
+              <motion.div
                 className="flex-shrink-0"
                 variants={iconVariants}
                 whileHover="hover"
@@ -123,7 +118,7 @@ export default function Events() {
               </h3>
             </div>
           </motion.div>
-          <motion.div 
+          <motion.div
             className="bg-[#0b2241] w-full rounded-2xl flex flex-col gap-5 justify-between p-6 cursor-pointer"
             variants={cardVariants}
             whileHover="hover"
@@ -131,10 +126,7 @@ export default function Events() {
           >
             <div className="gap-3 flex flex-col md:flex-row justify-between md:items-center">
               <div className="flex -ml-2 items-center gap-3">
-                <motion.div
-                  variants={iconVariants}
-                  whileHover="hover"
-                >
+                <motion.div variants={iconVariants} whileHover="hover">
                   <CalenderIcon
                     width={30}
                     height={30}
@@ -146,10 +138,7 @@ export default function Events() {
                 </h3>
               </div>
               <div className="text-white md:text-gray-400 -ml-2 gap-2 flex items-center">
-                <motion.div
-                  variants={iconVariants}
-                  whileHover="hover"
-                >
+                <motion.div variants={iconVariants} whileHover="hover">
                   <TimeIcon width={25} height={25} className="flex-shrink-0" />
                 </motion.div>
                 <h3 className="text-lg font-inter font-medium">10:00 AM</h3>
@@ -157,7 +146,7 @@ export default function Events() {
             </div>
 
             <div className="flex -ml-2 gap-2 items-start md:items-center">
-              <motion.div 
+              <motion.div
                 className="flex-shrink-0"
                 variants={iconVariants}
                 whileHover="hover"
@@ -173,7 +162,7 @@ export default function Events() {
             </div>
 
             <div className="flex items-start md:items-center gap-2 -ml-2">
-              <motion.div 
+              <motion.div
                 className="flex-shrink-0"
                 variants={iconVariants}
                 whileHover="hover"
@@ -181,7 +170,7 @@ export default function Events() {
                 <Location width={25} height={25} className="flex-shrink-0" />
               </motion.div>
               <h3 className="text-sm font-inter uppercase font-semibold text-white">
-                THOMAS HOTEL NO 2 FRIN RD, JERICOH HILL, IBADAN 200284,OYO
+                THAMAS HOTEL NO 2 FRIN RD, JERICHO HILL, IBADAN 200284,OYO
               </h3>
             </div>
           </motion.div>

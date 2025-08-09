@@ -8,6 +8,7 @@ import Events from './components/Events';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Speaker from './components/Speaker';
+import Pictures from './components/Pictures';
 
 function App() {
   const aboutRef = useRef(null);
@@ -28,7 +29,6 @@ function App() {
 
   return (
     <div className="bg-[#f4f8fc] relative">
-      {' '}
       <Header />
       <motion.div
         ref={aboutRef}
@@ -66,6 +66,7 @@ function App() {
       >
         <Speaker />
       </motion.div>
+      <Pictures />
       <Footer />
     </div>
   );
