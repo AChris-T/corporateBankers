@@ -1,9 +1,0 @@
-{
-  "functions": {
-    "api/register.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
-}
-
-
